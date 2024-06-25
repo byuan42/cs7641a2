@@ -9,26 +9,7 @@ import numpy as np
 import mlrose_hiive as mlrose
 import matplotlib.pyplot as plt
 #Read in 100 days worth of relevant columns of csv
-city = pd.read_csv("C:/Users/boyua/Documents/GHCN/ghcnd/ghcnd_georgia_stations.csv",usecols=['Station','Date','Data type','Value']).groupby(['Station','Data type']).head(100)
-#Filter for temp data types
-temp_data = city[city['Data type'].isin(['TMAX','TMIN','TOBS'])]
-#Time and value format transformations, as well as adding season and day labels and historical averages of values
-temp_data['Value'] = temp_data['Value']/10
-temp_data['Date'] = temp_data['Date'].astype(str)
-temp_data['Time'] = pd.to_datetime(temp_data['Date'],errors='coerce').dropna().apply(lambda date: date.toordinal())
-temp_data['Month'] = temp_data['Date'].str.slice(4,6)
-temp_data['Station'] = temp_data['Station'].astype(str)
-temp_data['Month and day'] = temp_data['Date'].str.slice(4,8)
-temp_data['Data type and station'] = temp_data['Data type'] + temp_data['Station']
-temp_data['Season'] = temp_data['Month'].apply(lambda month: 'Autumn' if month in ['09', '10', '11'] else 'Winter' if month in ['12', '01', '02'] else 'Spring' if month in ['03', '04', '05'] else 'Summer' if month in ['06', '07', '08'] else 'Unknown')
-temp_data['Day of the Week'] = [i.weekday()+1 if pd.notna(i) else None for i in pd.to_datetime(temp_data['Date'],format = '%Y%m%d', errors = 'coerce')]
-temp_data_yearly_averages = temp_data.groupby(['Month and day','Data type','Station'])['Value'].mean().reset_index()
-temp_data = pd.merge(temp_data,temp_data_yearly_averages,on=['Month and day','Data type','Station'])
-temp_data.rename(columns={'Value_x':'Value','Value_y':'Historical average'},inplace=True)
-temp_data_yearly_std = temp_data.groupby(['Month and day','Data type','Station'])['Value'].std().reset_index()
-temp_data = pd.merge(temp_data,temp_data_yearly_std,on=['Month and day','Data type','Station'])
-temp_data.rename(columns={'Value_x':'Value','Value_y':'Historical standard deviation'},inplace=True)
-temp_data['Normalized value'] = (temp_data['Value'] - temp_data['Historical average'])/temp_data['Historical standard deviation']
+temp_data = pd.read_csv("./temp_data.csv",index=None)
 #Checking length of values in each data type
 len(temp_data[temp_data['Data type']=='TMAX'])
 len(temp_data[temp_data['Data type']=='TMIN'])
