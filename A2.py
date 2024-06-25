@@ -9,7 +9,7 @@ import numpy as np
 import mlrose_hiive as mlrose
 import matplotlib.pyplot as plt
 #Read in 100 days worth of relevant columns of csv
-temp_data = pd.read_csv("./temp_data.csv",index=None)
+temp_data = pd.read_csv("./temp_data.csv")
 #Checking length of values in each data type
 len(temp_data[temp_data['Data type']=='TMAX'])
 len(temp_data[temp_data['Data type']=='TMIN'])
